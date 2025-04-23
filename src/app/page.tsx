@@ -1,5 +1,5 @@
 "use client";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { NoteCard } from "@/components/notes/NoteCard";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -19,11 +19,44 @@ import {
 } from "@/components/ui/alert-dialog";
 import { MainLayout } from "@/components/layout/Mainlayout";
 import Link from "next/link";
+import { createClient } from "@/utils/supabase/client";
+import axios from "axios";
 
 export default function Page() {
   const { notes, isLoading, deleteNote, toggleFavorite } = useNotes();
   const [searchTerm, setSearchTerm] = useState("");
   const [deleteId, setDeleteId] = useState<string | null>(null);
+  const supabase = createClient();
+
+  useEffect(() => {
+    const getUser = async () => {
+      const { data, error } = await supabase.auth.getUser();
+      if (error) {
+        console.error("Error fetching user:", error);
+      } else {
+        try {
+          const res = await axios.post(
+            `${process.env.NEXT_PUBLIC_API_URL}/api/create-user`,
+            {
+              email: data.user?.email,
+            }
+          );
+
+          if (res.status === 200) {
+            console.log(res.data.message);
+          }
+        } catch (error) {
+          console.error("Error in useEffect:11", error);
+        }
+      }
+    };
+
+    try {
+      getUser();
+    } catch (error) {
+      console.error("Error in useEffect:", error);
+    }
+  }, []);
 
   const filteredNotes = notes.filter(
     (note) =>

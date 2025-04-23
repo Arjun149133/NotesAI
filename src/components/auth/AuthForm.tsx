@@ -12,6 +12,10 @@ import {
 import { Input } from "../ui/input";
 import { Button } from "../ui/button";
 import { Lock, Mail, User } from "lucide-react";
+import { createClient } from "@/utils/supabase/client";
+import { toast } from "sonner";
+import { useRouter } from "next/navigation";
+import axios from "axios";
 
 const formSchema = z.object({
   email: z.string().email("Invalid email address"),
@@ -26,10 +30,98 @@ export function AuthForm({ text }: { text?: string }) {
       password: "",
     },
   });
+  const router = useRouter();
 
   const onSubmit = async (data: z.infer<typeof formSchema>) => {
     // Handle form submission
-    console.log(data);
+    try {
+      const supabase = await createClient();
+
+      const formData = {
+        email: data.email as string,
+        password: data.password as string,
+      };
+
+      if (text === "Sign Up") {
+        // Check if the user already exists
+        const res = await axios.post(
+          `${process.env.NEXT_PUBLIC_API_URL}/api/create-user`,
+          {
+            email: formData.email,
+            password: formData.password,
+          }
+        );
+
+        if (res.status === 200 && res.data.message === "User already exists") {
+          console.log("User already exists");
+          toast.error("User already exists. Please sign in.");
+          return;
+        }
+
+        if (res.status !== 200) {
+          console.log("User creation failed");
+          toast.error("User creation failed. Please try again.");
+          return;
+        }
+
+        const { error } = await supabase.auth.signUp(formData);
+
+        if (error) {
+          console.error("Error signing up:", error);
+          toast.error(
+            "Error signing up. Please check your email and password."
+          );
+          return;
+        }
+
+        toast.success(
+          "Sign up successful! Please check your email for confirmation."
+        );
+        console.log(data);
+      } else {
+        const res = await axios.post(
+          `${process.env.NEXT_PUBLIC_API_URL}/api/login-user`,
+          {
+            email: formData.email,
+            password: formData.password,
+          }
+        );
+
+        if (res.status === 200 && res.data.message === "User does not exist") {
+          console.log("User does not exist");
+          toast.error("User does not exist. Please sign up.");
+          return;
+        }
+
+        if (res.status === 200 && res.data.message === "Invalid password") {
+          console.log("Invalid password");
+          toast.error("Invalid password. Please try again.");
+          return;
+        }
+
+        if (res.status !== 200) {
+          console.log("User authentication failed");
+          toast.error("User authentication failed. Please try again.");
+          return;
+        }
+
+        const { error } = await supabase.auth.signInWithPassword(formData);
+
+        if (error) {
+          console.error("Error signing in:", error);
+          toast.error(
+            "Error signing in. Please check your email and password."
+          );
+          return;
+        }
+
+        router.push("/");
+        toast.success("Sign in successful!");
+      }
+    } catch (error) {
+      console.error("Error during form submission:", error);
+      toast.error("An error occurred. Please try again.");
+    }
   };
 
   return (
@@ -48,6 +140,7 @@ export function AuthForm({ text }: { text?: string }) {
                       <Mail size={18} />
                     </span>
                     <Input
+                      id="email"
                       placeholder="Enter your email"
                       className="pl-10 pr-3 py-2 rounded-lg w-full bg-[#23273C] text-white border border-gray-700 focus:border-[#884dff] outline-none transition-all"
                       {...field}
@@ -71,6 +164,7 @@ export function AuthForm({ text }: { text?: string }) {
                       <Lock size={18} />
                     </span>
                     <Input
+                      id="password"
                       placeholder="Enter your password"
                       className="pl-10 pr-3 py-2 rounded-lg w-full bg-[#23273C] text-white border border-gray-700 focus:border-[#884dff] outline-none transition-all"
                       {...field}

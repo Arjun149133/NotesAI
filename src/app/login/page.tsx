@@ -1,6 +1,5 @@
 import { AuthForm } from "@/components/auth/AuthForm";
-import { Button } from "@/components/ui/button";
-import { Chrome } from "lucide-react";
+import GoogleAuth from "@/components/auth/GoogleAuth";
 import Link from "next/link";
 
 const Login = () => (
@@ -26,9 +25,7 @@ const Login = () => (
         <p className="text-gray-400">Login to your account to continue.</p>
       </div>
       {/* Google sign up */}
-      <Button className="w-full flex items-center justify-center gap-2 bg-gradient-to-r from-[#884dff] to-[#5535ff] hover:saturate-150 text-white p-6 rounded-lg font-semibold mb-6 transition-all animate-Button-glow">
-        <Chrome className="w-5 h-5" /> Login with Google
-      </Button>
+      <GoogleAuth />
       {/* Divider */}
       <div className="flex items-center my-4">
         <div className="flex-grow h-px bg-gray-700" />

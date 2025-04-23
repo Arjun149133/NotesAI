@@ -1,12 +1,33 @@
 "use client";
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { LogOut, Moon, Sun, Menu } from "lucide-react";
+import Link from "next/link";
+import { createClient } from "@/utils/supabase/client";
+import { User } from "@supabase/supabase-js";
+import { useRouter } from "next/navigation";
 // import { supabase } from '@/lib/supabase';
 
 export function Header() {
-  const [isDarkMode, setIsDarkMode] = React.useState(true);
-  const [isSidebarOpen, setIsSidebarOpen] = React.useState(false);
+  const [isDarkMode, setIsDarkMode] = useState(true);
+  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+  const [user, setUser] = useState<User | null>(null);
+  const supabase = createClient();
+
+  const router = useRouter();
+
+  useEffect(() => {
+    async function fetchUser() {
+      const { data, error } = await supabase.auth.getUser();
+      if (error) {
+        console.error("Error fetching user:", error);
+      } else {
+        setUser(data.user);
+      }
+    }
+
+    fetchUser();
+  }, []);
 
   const toggleTheme = () => {
     setIsDarkMode(!isDarkMode);
@@ -56,9 +77,28 @@ export function Header() {
               <Moon className="h-5 w-5" />
             )}
           </Button>
-          <Button variant="ghost" size="icon">
-            <LogOut className="h-5 w-5" />
-          </Button>
+          {!user ? (
+            <div className=" flex items-center gap-2">
+              <Button>
+                <Link href="/login">Login </Link>
+              </Button>
+              <Button variant={"outline"}>
+                <Link href="/signup">Sign Up </Link>
+              </Button>
+            </div>
+          ) : (
+            <Button
+              onClick={() => {
+                supabase.auth.signOut();
+                setUser(null);
+                router.push("/login");
+              }}
+              variant="ghost"
+              size="icon"
+            >
+              <LogOut className="h-5 w-5" />
+            </Button>
+          )}
         </div>
       </div>
     </header>
