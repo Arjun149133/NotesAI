@@ -2,6 +2,9 @@
 
 This repository contains a web application built with [Bun](https://bun.sh/) and [Supabase](https://supabase.com/), using [Prisma](https://www.prisma.io/) as an ORM.
 
+## Note
+Due to time constraints, I wasn't able to fully implement the SSR features of Next.js. While this isn't ideal, leveraging SSR is essential to fully harness the power of Next.js.
+
 ## Getting Started
 
 Follow these steps to set up and run the project locally:
