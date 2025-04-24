@@ -63,7 +63,7 @@ export function Header() {
             <Menu className="h-5 w-5" />
           </Button>
           <div className="flex items-center gap-2">
-            <span className="h-8 w-8 rounded-full bg-primary flex items-center justify-center">
+            <span className="h-8 w-8 rounded-full bg-black flex items-center justify-center">
               <span className="text-white font-bold">N</span>
             </span>
             <h1 className="text-xl font-bold tracking-tight">NotesAI</h1>

@@ -1,5 +1,5 @@
 "use client";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -27,12 +27,14 @@ import {
 } from "@/components/ui/alert-dialog";
 import { useRouter } from "next/navigation";
 import { MainLayout } from "@/components/layout/Mainlayout";
+import { toast } from "sonner";
+import { createClient } from "@/utils/supabase/client";
 
 export default function SettingsPage() {
   const router = useRouter();
   const [isDarkMode, setIsDarkMode] = useState(true);
   const [isLoading, setIsLoading] = useState(false);
-
+  const supabase = createClient();
   // Placeholder user data (would come from Supabase in real app)
   const [user, setUser] = useState({
     email: "user@example.com",
@@ -44,45 +46,26 @@ export default function SettingsPage() {
 
   const toggleTheme = () => {
     setIsDarkMode(!isDarkMode);
-    document.documentElement.classList.toggle("light");
 
-    // toast({
-    //   title: `Theme changed to ${isDarkMode ? "light" : "dark"} mode`,
-    //   description: "Your preference has been saved",
-    // });
+    toast.success(`Theme changed to ${isDarkMode ? "light" : "dark"} mode`, {
+      description: "Your preference has been saved",
+    });
   };
 
-  //   const handleSignOut = async () => {
-  //     setIsLoading(true);
-  //     try {
-  //       await supabase.auth.signOut();
-  //       toast({
-  //         title: "Signed out successfully",
-  //         description: "You have been signed out of your account",
-  //       });
-  //       navigate("/login");
-  //     } catch (error) {
-  //       toast({
-  //         title: "Error signing out",
-  //         description: "Please try again",
-  //         variant: "destructive",
-  //       });
-  //     } finally {
-  //       setIsLoading(false);
-  //     }
-  //   };
+  useEffect(() => {
+    if (isDarkMode) {
+      document.documentElement.classList.add("dark");
+      document.documentElement.classList.remove("light");
+    } else {
+      document.documentElement.classList.remove("dark");
+      document.documentElement.classList.add("light");
+    }
+  }, [isDarkMode]);
 
   const saveAPIKey = () => {
-    //     toast({
-    //       title: "API Key saved",
-    //       description: "Your AI service API key has been saved",
-    //     });
-    //   };
-    //   const updateProfile = () => {
-    //     toast({
-    //       title: "Profile updated",
-    //       description: "Your profile information has been updated",
-    //     });
+    toast.success(`API key saved successfully`, {
+      description: "Your AI service API key has been saved",
+    });
   };
 
   return (
@@ -219,6 +202,10 @@ export default function SettingsPage() {
             <div className="flex flex-col space-y-4">
               <div>
                 <Button
+                  onClick={() => {
+                    supabase.auth.signOut();
+                    router.push("/login");
+                  }}
                   variant="outline"
                   className="w-full sm:w-auto"
                   disabled={isLoading}
