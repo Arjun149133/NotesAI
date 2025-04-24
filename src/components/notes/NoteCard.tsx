@@ -18,17 +18,7 @@ import {
 // import { Note } from "@/lib/api";
 import { cn } from "@/lib/utils";
 import Link from "next/link";
-
-export interface Note {
-  id: string;
-  title: string;
-  content: string;
-  is_favorite: boolean;
-  created_at: string;
-  updated_at: string;
-  user_id: string;
-  summary?: string;
-}
+import { Note } from "@/lib/api";
 
 interface NoteCardProps {
   note: Note;
@@ -37,7 +27,7 @@ interface NoteCardProps {
 }
 
 export function NoteCard({ note, onDelete, onToggleFavorite }: NoteCardProps) {
-  const formattedDate = new Date(note.updated_at).toLocaleDateString("en-US", {
+  const formattedDate = new Date(note.updatedAt!).toLocaleDateString("en-US", {
     year: "numeric",
     month: "short",
     day: "numeric",
@@ -54,12 +44,12 @@ export function NoteCard({ note, onDelete, onToggleFavorite }: NoteCardProps) {
       className={cn(
         "h-full flex flex-col overflow-hidden transition-all duration-200 hover:shadow-md",
         "glass-card border-white/10",
-        note.is_favorite && "ring-1 ring-primary/50"
+        note.favorite && "ring-1 ring-primary/50"
       )}
     >
       <CardHeader className="pb-2 flex flex-row items-start justify-between space-y-0">
         <CardTitle className="text-xl font-semibold truncate flex items-center gap-2">
-          {note.is_favorite && (
+          {note.favorite && (
             <Star className="h-4 w-4 fill-primary text-primary" />
           )}
           <span className="truncate">{note.title}</span>
@@ -71,7 +61,7 @@ export function NoteCard({ note, onDelete, onToggleFavorite }: NoteCardProps) {
               <span className="sr-only">Open menu</span>
             </Button>
           </DropdownMenuTrigger>
-          <DropdownMenuContent align="end">
+          <DropdownMenuContent align="end" className=" z-50">
             <DropdownMenuItem asChild>
               <Link
                 href={`/edit-note/${note.id}`}
@@ -82,11 +72,11 @@ export function NoteCard({ note, onDelete, onToggleFavorite }: NoteCardProps) {
               </Link>
             </DropdownMenuItem>
             <DropdownMenuItem
-              onClick={() => onToggleFavorite(note.id, !note.is_favorite)}
+              onClick={() => onToggleFavorite(note.id, !note.favorite)}
               className="flex items-center"
             >
               <Star className="mr-2 h-4 w-4" />
-              {note.is_favorite ? "Remove from favorites" : "Add to favorites"}
+              {note.favorite ? "Remove from favorites" : "Add to favorites"}
             </DropdownMenuItem>
             <DropdownMenuSeparator />
             <DropdownMenuItem
@@ -100,12 +90,12 @@ export function NoteCard({ note, onDelete, onToggleFavorite }: NoteCardProps) {
         </DropdownMenu>
       </CardHeader>
       <CardContent className="py-4 flex-grow flex flex-col">
-        {note.summary && (
+        {note.aiSummary && (
           <div className="mb-3 text-sm bg-primary/10 p-2 rounded-md border border-primary/20">
             <div className="font-medium text-xs text-primary mb-1 flex items-center">
-              <FileText className="h-3 w-3 mr-1" /> AI SUMMARY
+              <FileText className="h-3 w-3 mr-1" /> AI aiSummary
             </div>
-            <p className="text-muted-foreground">{note.summary}</p>
+            <p className="text-muted-foreground">{note.aiSummary}</p>
           </div>
         )}
         <p className="text-muted-foreground line-clamp-4">

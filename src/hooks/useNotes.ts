@@ -1,6 +1,8 @@
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 // import { supabase } from "@/lib/supabase";
 import { Note, summarizeText } from "@/lib/api";
+import axios from "axios";
+import { toast } from "sonner";
 // import { useToast } from "@/hooks/use-toast";
 
 // Note: In a real implementation, these functions would make actual Supabase calls
@@ -9,21 +11,16 @@ import { Note, summarizeText } from "@/lib/api";
 export function useNotes() {
   const queryClient = useQueryClient();
 
-  // Get all notes for the current user
   const notesQuery = useQuery({
     queryKey: ["notes"],
-    queryFn: async (): Promise<Note[]> => {
-      // In a real app, this would be:
-      // const { data, error } = await supabase
-      //   .from('notes')
-      //   .select('*')
-      //   .order('updated_at', { ascending: false });
+    queryFn: async () => {
+      const notes = await axios.get(
+        `${process.env.NEXT_PUBLIC_API_URL}/api/note/getall`
+      );
 
-      // if (error) throw error;
-      // return data || [];
+      console.log("notes data", notes.data);
 
-      // Mock data for demonstration
-      return mockNotes;
+      return notes.data;
     },
   });
 
@@ -31,21 +28,14 @@ export function useNotes() {
   const useNote = (id?: string) => {
     return useQuery({
       queryKey: ["notes", id],
-      queryFn: async (): Promise<Note | undefined> => {
+      queryFn: async () => {
         if (!id) return undefined;
 
-        // In a real app, this would be:
-        // const { data, error } = await supabase
-        //   .from('notes')
-        //   .select('*')
-        //   .eq('id', id)
-        //   .single();
+        const note = await axios.get(
+          `${process.env.NEXT_PUBLIC_API_URL}/api/note/${id}`
+        );
 
-        // if (error) throw error;
-        // return data;
-
-        // Mock data for demonstration
-        return mockNotes.find((note) => note.id === id);
+        return note.data;
       },
       enabled: !!id,
     });
@@ -53,152 +43,83 @@ export function useNotes() {
 
   // Create a new note
   const createNote = useMutation({
-    mutationFn: async (note: { title: string; content: string }) => {
-      // In a real app, this would be:
-      // const { data, error } = await supabase
-      //   .from('notes')
-      //   .insert({
-      //     ...note,
-      //     is_favorite: false,
-      //     user_id: (await supabase.auth.getUser()).data.user?.id,
-      //   })
-      //   .select()
-      //   .single();
-
-      // if (error) throw error;
-      // return data;
-
-      // Mock implementation
-      const newNote: Note = {
-        id: Date.now().toString(),
+    mutationFn: async (note: {
+      title: string;
+      content: string;
+      type?: string;
+    }) => {
+      return axios.post(`${process.env.NEXT_PUBLIC_API_URL}/api/note/create`, {
         title: note.title,
         content: note.content,
-        is_favorite: false,
-        created_at: new Date().toISOString(),
-        updated_at: new Date().toISOString(),
-        user_id: "current-user-id",
-      };
-
-      // Generate AI summary if content is substantial
-      if (note.content && note.content.length > 50) {
-        try {
-          newNote.summary = await summarizeText(note.content);
-        } catch (error) {
-          console.error("Failed to generate summary:", error);
-        }
-      }
-
-      return newNote;
+        type: note.type,
+      });
     },
     onSuccess: (data) => {
+      console.log("note data", data);
       queryClient.invalidateQueries({ queryKey: ["notes"] });
-      //   toast({
-      //     title: "Note created",
-      //     description: "Your note has been saved successfully",
-      //   });
+      toast("Your note has been saved successfully");
       return data;
     },
     onError: (error) => {
-      //   toast({
-      //     title: "Failed to create note",
-      //     description:
-      //       error instanceof Error ? error.message : "An unknown error occurred",
-      //     variant: "destructive",
-      //   });
+      console.log(error);
+      toast.error("Failed to create note", {
+        description: "An unknown error occurred",
+      });
     },
   });
 
   // Update an existing note
   const updateNote = useMutation({
     mutationFn: async (note: Partial<Note> & { id: string }) => {
-      // In a real app, this would be:
-      // const { data, error } = await supabase
-      //   .from('notes')
-      //   .update({
-      //     ...note,
-      //     updated_at: new Date().toISOString(),
-      //   })
-      //   .eq('id', note.id)
-      //   .select()
-      //   .single();
+      const { id, ...rest } = note;
 
-      // if (error) throw error;
-      // return data;
-
-      // Mock implementation
-      const existingNote = mockNotes.find((n) => n.id === note.id);
-      if (!existingNote) throw new Error("Note not found");
-
-      const updatedNote = {
-        ...existingNote,
-        ...note,
-        updated_at: new Date().toISOString(),
-      };
-
-      // Generate AI summary if content was updated and is substantial
-      if (
-        note.content &&
-        note.content !== existingNote.content &&
-        note.content.length > 50
-      ) {
-        try {
-          updatedNote.summary = await summarizeText(note.content);
-        } catch (error) {
-          console.error("Failed to update summary:", error);
+      const res = await axios.put(
+        `${process.env.NEXT_PUBLIC_API_URL}/api/note/${id}`,
+        {
+          ...rest,
         }
+      );
+
+      if (res.status !== 200) {
+        throw new Error("Failed to update note");
       }
 
-      return updatedNote;
+      return res.data;
     },
     onSuccess: (data) => {
+      console.log("updated note data", data);
       queryClient.invalidateQueries({ queryKey: ["notes"] });
-      queryClient.invalidateQueries({ queryKey: ["notes", data.id] });
-      //   toast({
-      //     title: "Note updated",
-      //     description: "Your note has been updated successfully",
-      //   });
+      queryClient.invalidateQueries({ queryKey: ["notes", data.note.id] });
+      toast.success("Note updated");
       return data;
     },
     onError: (error) => {
-      //   toast({
-      //     title: "Failed to update note",
-      //     description:
-      //       error instanceof Error ? error.message : "An unknown error occurred",
-      //     variant: "destructive",
-      //   });
+      toast.error("Failed to update note");
     },
   });
 
   // Delete a note
   const deleteNote = useMutation({
     mutationFn: async (id: string) => {
-      // In a real app, this would be:
-      // const { error } = await supabase
-      //   .from('notes')
-      //   .delete()
-      //   .eq('id', id);
+      const res = await axios.delete(
+        `${process.env.NEXT_PUBLIC_API_URL}/api/note/${id}`
+      );
 
-      // if (error) throw error;
-      // return id;
+      if (res.status !== 200) {
+        throw new Error("Failed to delete note");
+      }
 
-      // Mock implementation
-      return id;
+      return res.data;
     },
     onSuccess: (id) => {
       queryClient.invalidateQueries({ queryKey: ["notes"] });
-      //   toast({
-      //     title: "Note deleted",
-      //     description: "Your note has been deleted successfully",
-      //   });
+      toast.success("Note deleted successfully");
       return id;
     },
     onError: (error) => {
-      //   toast({
-      //     title: "Failed to delete note",
-      //     description:
-      //       error instanceof Error ? error.message : "An unknown error occurred",
-      //     variant: "destructive",
-      //   });
+      toast.error("Failed to delete note", {
+        description: "An unknown error occurred",
+      });
     },
   });
 
@@ -214,7 +135,7 @@ export function useNotes() {
       // In a real app, this would be:
       // const { data, error } = await supabase
       //   .from('notes')
-      //   .update({ is_favorite: isFavorite })
+      //   .update({ favourite: isFavorite })
       //   .eq('id', id)
       //   .select()
       //   .single();
@@ -228,18 +149,18 @@ export function useNotes() {
 
       return {
         ...existingNote,
-        is_favorite: isFavorite,
-        updated_at: new Date().toISOString(),
+        favourite: isFavorite,
+        updatedAt: new Date().toISOString(),
       };
     },
     onSuccess: (data) => {
       queryClient.invalidateQueries({ queryKey: ["notes"] });
       queryClient.invalidateQueries({ queryKey: ["notes", data.id] });
       //   toast({
-      //     title: data.is_favorite
+      //     title: data.favourite
       //       ? "Added to favorites"
       //       : "Removed from favorites",
-      //     description: data.is_favorite
+      //     description: data.favourite
       //       ? "Note has been added to favorites"
       //       : "Note has been removed from favorites",
       //   });
@@ -256,9 +177,10 @@ export function useNotes() {
   });
 
   return {
-    notes: notesQuery.data || [],
+    data: notesQuery.data || [],
     isLoading: notesQuery.isLoading,
     isError: notesQuery.isError,
+    isFetching: notesQuery.isFetching,
     error: notesQuery.error,
     useNote,
     createNote,
@@ -275,23 +197,25 @@ const mockNotes: Note[] = [
     title: "Welcome to NotesAI",
     content:
       'NotesAI is your AI-powered note-taking app with a space theme. Create, edit, and organize your notes with ease. The AI summarization feature helps you get the gist of long notes quickly.\n\nTo get started, click the "New Note" button in the sidebar to create your first note.',
-    is_favorite: true,
-    created_at: "2023-04-21T10:00:00.000Z",
-    updated_at: "2023-04-21T10:00:00.000Z",
-    user_id: "current-user-id",
-    summary:
+    favorite: true,
+    type: "NOTE",
+    createdAt: "2023-04-21T10:00:00.000Z",
+    updatedAt: "2023-04-21T10:00:00.000Z",
+    userId: "current-user-id",
+    aiSummary:
       "Introduction to NotesAI app with AI-powered features. Instructions to get started by creating a new note.",
   },
   {
     id: "2",
     title: "AI Summarization Feature",
     content:
-      "NotesAI uses AI to automatically summarize your longer notes. This helps you quickly understand the content of a note without reading the entire text. The summary is generated when you create or update a note with substantial content.\n\nThe AI analyzes your text and extracts the most important points to create a concise summary.",
-    is_favorite: false,
-    created_at: "2023-04-21T11:30:00.000Z",
-    updated_at: "2023-04-21T11:30:00.000Z",
-    user_id: "current-user-id",
-    summary:
+      "NotesAI uses AI to automatically summarize your longer notes. This helps you quickly understand the content of a note without reading the entire text. The aiSummary is generated when you create or update a note with substantial content.\n\nThe AI analyzes your text and extracts the most important points to create a concise aiSummary.",
+    favorite: false,
+    type: "JOURNAL",
+    createdAt: "2023-04-21T11:30:00.000Z",
+    updatedAt: "2023-04-21T11:30:00.000Z",
+    userId: "current-user-id",
+    aiSummary:
       "Description of the AI summarization feature that automatically creates summaries of longer notes to help quickly understand content.",
   },
 ];

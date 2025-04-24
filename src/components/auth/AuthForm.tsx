@@ -53,13 +53,11 @@ export function AuthForm({ text }: { text?: string }) {
         );
 
         if (res.status === 200 && res.data.message === "User already exists") {
-          console.log("User already exists");
           toast.error("User already exists. Please sign in.");
           return;
         }
 
         if (res.status !== 200) {
-          console.log("User creation failed");
           toast.error("User creation failed. Please try again.");
           return;
         }
@@ -77,7 +75,6 @@ export function AuthForm({ text }: { text?: string }) {
         toast.success(
           "Sign up successful! Please check your email for confirmation."
         );
-        console.log(data);
       } else {
         const res = await axios.post(
           `${process.env.NEXT_PUBLIC_API_URL}/api/login-user`,
@@ -88,19 +85,16 @@ export function AuthForm({ text }: { text?: string }) {
         );
 
         if (res.status === 200 && res.data.message === "User does not exist") {
-          console.log("User does not exist");
           toast.error("User does not exist. Please sign up.");
           return;
         }
 
         if (res.status === 200 && res.data.message === "Invalid password") {
-          console.log("Invalid password");
           toast.error("Invalid password. Please try again.");
           return;
         }
 
         if (res.status !== 200) {
-          console.log("User authentication failed");
           toast.error("User authentication failed. Please try again.");
           return;
         }

@@ -50,11 +50,6 @@ export function Sidebar() {
       icon: Star,
     },
     {
-      title: "Journal",
-      href: "/journal",
-      icon: Book,
-    },
-    {
       title: "Settings",
       href: "/settings",
       icon: Settings,

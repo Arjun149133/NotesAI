@@ -21,12 +21,21 @@ import { MainLayout } from "@/components/layout/Mainlayout";
 import Link from "next/link";
 import { createClient } from "@/utils/supabase/client";
 import axios from "axios";
+import { Note } from "@/lib/api";
+import { useQuery } from "@tanstack/react-query";
 
 export default function Page() {
-  const { notes, isLoading, deleteNote, toggleFavorite } = useNotes();
+  const { data, isFetching, isLoading, deleteNote, toggleFavorite } =
+    useNotes();
   const [searchTerm, setSearchTerm] = useState("");
   const [deleteId, setDeleteId] = useState<string | null>(null);
   const supabase = createClient();
+  const [notes, setNotes] = useState<Note[]>([]);
+  const [filteredNotes, setFilteredNotes] = useState<Note[]>([]);
+
+  useEffect(() => {
+    setNotes(data.notes);
+  }, [isFetching]);
 
   useEffect(() => {
     const getUser = async () => {
@@ -43,7 +52,7 @@ export default function Page() {
           );
 
           if (res.status === 200) {
-            console.log(res.data.message);
+            res.data.message;
           }
         } catch (error) {
           console.error("Error in useEffect:11", error);
@@ -58,11 +67,17 @@ export default function Page() {
     }
   }, []);
 
-  const filteredNotes = notes.filter(
-    (note) =>
-      note.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      note.content.toLowerCase().includes(searchTerm.toLowerCase())
-  );
+  useEffect(() => {
+    if (!notes) return;
+
+    const filteredNotes = notes.filter(
+      (note: Note) =>
+        note.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        note.content.toLowerCase().includes(searchTerm.toLowerCase())
+    );
+
+    setFilteredNotes(filteredNotes);
+  }, [searchTerm, notes]);
 
   const handleDeleteNote = async (id: string) => {
     setDeleteId(id);
@@ -78,6 +93,16 @@ export default function Page() {
   const handleToggleFavorite = async (id: string, isFavorite: boolean) => {
     await toggleFavorite.mutateAsync({ id, isFavorite });
   };
+
+  if (isLoading) {
+    return (
+      <MainLayout>
+        <div className="flex justify-center items-center h-[60vh]">
+          <div className="animate-pulse text-primary">Loading notes...</div>
+        </div>
+      </MainLayout>
+    );
+  }
 
   return (
     <MainLayout>
@@ -120,7 +145,7 @@ export default function Page() {
             </div>
           ) : filteredNotes.length > 0 ? (
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-              {filteredNotes.map((note) => (
+              {filteredNotes.map((note: Note) => (
                 <Link
                   href={`/view-note/${note.id}`}
                   key={note.id}
@@ -164,11 +189,11 @@ export default function Page() {
                 Loading favorites...
               </div>
             </div>
-          ) : filteredNotes.filter((note) => note.is_favorite).length > 0 ? (
+          ) : filteredNotes.filter((note: Note) => note.favorite).length > 0 ? (
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
               {filteredNotes
-                .filter((note) => note.is_favorite)
-                .map((note) => (
+                .filter((note: Note) => note.favorite)
+                .map((note: Note) => (
                   <Link
                     href={`/view-note/${note.id}`}
                     key={note.id}

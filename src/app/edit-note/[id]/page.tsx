@@ -1,17 +1,25 @@
 "use client";
-import React from "react";
+import React, { useEffect } from "react";
 import { NoteForm } from "@/components/notes/NoteForm";
 import { useNotes } from "@/hooks/useNotes";
 import { Button } from "@/components/ui/button";
 import { ArrowLeft } from "lucide-react";
 import { MainLayout } from "@/components/layout/Mainlayout";
 import { useParams, useRouter } from "next/navigation";
+import { Note } from "@/lib/api";
 
 export default function EditNote() {
   const { id } = useParams();
   const { useNote, updateNote } = useNotes();
-  const { data: note, isLoading, isError } = useNote(id as string);
+  const { data, isLoading, isError, isFetching } = useNote(id as string);
   const router = useRouter();
+  const [note, setNote] = React.useState<Note | null>(null);
+
+  useEffect(() => {
+    if (!data) return;
+
+    setNote(data.note);
+  }, [isFetching, data]);
 
   if (isLoading) {
     return (
@@ -37,7 +45,11 @@ export default function EditNote() {
     );
   }
 
-  const handleSubmit = async (data: { title: string; content: string }) => {
+  const handleSubmit = async (data: {
+    title: string;
+    content: string;
+    type?: "NOTE" | "JOURNAL";
+  }) => {
     return await updateNote.mutateAsync({
       id: note.id,
       ...data,

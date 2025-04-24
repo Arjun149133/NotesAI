@@ -2105,6 +2105,7 @@ export namespace Prisma {
     title: string | null
     content: string | null
     type: $Enums.NoteType | null
+    favorite: boolean | null
     createdAt: Date | null
     updatedAt: Date | null
     userId: string | null
@@ -2116,6 +2117,7 @@ export namespace Prisma {
     title: string | null
     content: string | null
     type: $Enums.NoteType | null
+    favorite: boolean | null
     createdAt: Date | null
     updatedAt: Date | null
     userId: string | null
@@ -2127,6 +2129,7 @@ export namespace Prisma {
     title: number
     content: number
     type: number
+    favorite: number
     createdAt: number
     updatedAt: number
     userId: number
@@ -2140,6 +2143,7 @@ export namespace Prisma {
     title?: true
     content?: true
     type?: true
+    favorite?: true
     createdAt?: true
     updatedAt?: true
     userId?: true
@@ -2151,6 +2155,7 @@ export namespace Prisma {
     title?: true
     content?: true
     type?: true
+    favorite?: true
     createdAt?: true
     updatedAt?: true
     userId?: true
@@ -2162,6 +2167,7 @@ export namespace Prisma {
     title?: true
     content?: true
     type?: true
+    favorite?: true
     createdAt?: true
     updatedAt?: true
     userId?: true
@@ -2246,6 +2252,7 @@ export namespace Prisma {
     title: string | null
     content: string | null
     type: $Enums.NoteType
+    favorite: boolean
     createdAt: Date
     updatedAt: Date
     userId: string
@@ -2274,6 +2281,7 @@ export namespace Prisma {
     title?: boolean
     content?: boolean
     type?: boolean
+    favorite?: boolean
     createdAt?: boolean
     updatedAt?: boolean
     userId?: boolean
@@ -2286,6 +2294,7 @@ export namespace Prisma {
     title?: boolean
     content?: boolean
     type?: boolean
+    favorite?: boolean
     createdAt?: boolean
     updatedAt?: boolean
     userId?: boolean
@@ -2298,6 +2307,7 @@ export namespace Prisma {
     title?: boolean
     content?: boolean
     type?: boolean
+    favorite?: boolean
     createdAt?: boolean
     updatedAt?: boolean
     userId?: boolean
@@ -2310,13 +2320,14 @@ export namespace Prisma {
     title?: boolean
     content?: boolean
     type?: boolean
+    favorite?: boolean
     createdAt?: boolean
     updatedAt?: boolean
     userId?: boolean
     aiSummary?: boolean
   }
 
-  export type NoteOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "title" | "content" | "type" | "createdAt" | "updatedAt" | "userId" | "aiSummary", ExtArgs["result"]["note"]>
+  export type NoteOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "title" | "content" | "type" | "favorite" | "createdAt" | "updatedAt" | "userId" | "aiSummary", ExtArgs["result"]["note"]>
   export type NoteInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     user?: boolean | UserDefaultArgs<ExtArgs>
   }
@@ -2337,6 +2348,7 @@ export namespace Prisma {
       title: string | null
       content: string | null
       type: $Enums.NoteType
+      favorite: boolean
       createdAt: Date
       updatedAt: Date
       userId: string
@@ -2769,6 +2781,7 @@ export namespace Prisma {
     readonly title: FieldRef<"Note", 'String'>
     readonly content: FieldRef<"Note", 'String'>
     readonly type: FieldRef<"Note", 'NoteType'>
+    readonly favorite: FieldRef<"Note", 'Boolean'>
     readonly createdAt: FieldRef<"Note", 'DateTime'>
     readonly updatedAt: FieldRef<"Note", 'DateTime'>
     readonly userId: FieldRef<"Note", 'String'>
@@ -3218,6 +3231,7 @@ export namespace Prisma {
     title: 'title',
     content: 'content',
     type: 'type',
+    favorite: 'favorite',
     createdAt: 'createdAt',
     updatedAt: 'updatedAt',
     userId: 'userId',
@@ -3295,6 +3309,13 @@ export namespace Prisma {
    * Reference to a field of type 'NoteType[]'
    */
   export type ListEnumNoteTypeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'NoteType[]'>
+    
+
+
+  /**
+   * Reference to a field of type 'Boolean'
+   */
+  export type BooleanFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Boolean'>
     
 
 
@@ -3383,6 +3404,7 @@ export namespace Prisma {
     title?: StringNullableFilter<"Note"> | string | null
     content?: StringNullableFilter<"Note"> | string | null
     type?: EnumNoteTypeFilter<"Note"> | $Enums.NoteType
+    favorite?: BoolFilter<"Note"> | boolean
     createdAt?: DateTimeFilter<"Note"> | Date | string
     updatedAt?: DateTimeFilter<"Note"> | Date | string
     userId?: StringFilter<"Note"> | string
@@ -3395,6 +3417,7 @@ export namespace Prisma {
     title?: SortOrderInput | SortOrder
     content?: SortOrderInput | SortOrder
     type?: SortOrder
+    favorite?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
     userId?: SortOrder
@@ -3410,6 +3433,7 @@ export namespace Prisma {
     title?: StringNullableFilter<"Note"> | string | null
     content?: StringNullableFilter<"Note"> | string | null
     type?: EnumNoteTypeFilter<"Note"> | $Enums.NoteType
+    favorite?: BoolFilter<"Note"> | boolean
     createdAt?: DateTimeFilter<"Note"> | Date | string
     updatedAt?: DateTimeFilter<"Note"> | Date | string
     userId?: StringFilter<"Note"> | string
@@ -3422,6 +3446,7 @@ export namespace Prisma {
     title?: SortOrderInput | SortOrder
     content?: SortOrderInput | SortOrder
     type?: SortOrder
+    favorite?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
     userId?: SortOrder
@@ -3439,6 +3464,7 @@ export namespace Prisma {
     title?: StringNullableWithAggregatesFilter<"Note"> | string | null
     content?: StringNullableWithAggregatesFilter<"Note"> | string | null
     type?: EnumNoteTypeWithAggregatesFilter<"Note"> | $Enums.NoteType
+    favorite?: BoolWithAggregatesFilter<"Note"> | boolean
     createdAt?: DateTimeWithAggregatesFilter<"Note"> | Date | string
     updatedAt?: DateTimeWithAggregatesFilter<"Note"> | Date | string
     userId?: StringWithAggregatesFilter<"Note"> | string
@@ -3517,6 +3543,7 @@ export namespace Prisma {
     title?: string | null
     content?: string | null
     type?: $Enums.NoteType
+    favorite?: boolean
     createdAt?: Date | string
     updatedAt?: Date | string
     aiSummary?: string | null
@@ -3528,6 +3555,7 @@ export namespace Prisma {
     title?: string | null
     content?: string | null
     type?: $Enums.NoteType
+    favorite?: boolean
     createdAt?: Date | string
     updatedAt?: Date | string
     userId: string
@@ -3539,6 +3567,7 @@ export namespace Prisma {
     title?: NullableStringFieldUpdateOperationsInput | string | null
     content?: NullableStringFieldUpdateOperationsInput | string | null
     type?: EnumNoteTypeFieldUpdateOperationsInput | $Enums.NoteType
+    favorite?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     aiSummary?: NullableStringFieldUpdateOperationsInput | string | null
@@ -3550,6 +3579,7 @@ export namespace Prisma {
     title?: NullableStringFieldUpdateOperationsInput | string | null
     content?: NullableStringFieldUpdateOperationsInput | string | null
     type?: EnumNoteTypeFieldUpdateOperationsInput | $Enums.NoteType
+    favorite?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     userId?: StringFieldUpdateOperationsInput | string
@@ -3561,6 +3591,7 @@ export namespace Prisma {
     title?: string | null
     content?: string | null
     type?: $Enums.NoteType
+    favorite?: boolean
     createdAt?: Date | string
     updatedAt?: Date | string
     userId: string
@@ -3572,6 +3603,7 @@ export namespace Prisma {
     title?: NullableStringFieldUpdateOperationsInput | string | null
     content?: NullableStringFieldUpdateOperationsInput | string | null
     type?: EnumNoteTypeFieldUpdateOperationsInput | $Enums.NoteType
+    favorite?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     aiSummary?: NullableStringFieldUpdateOperationsInput | string | null
@@ -3582,6 +3614,7 @@ export namespace Prisma {
     title?: NullableStringFieldUpdateOperationsInput | string | null
     content?: NullableStringFieldUpdateOperationsInput | string | null
     type?: EnumNoteTypeFieldUpdateOperationsInput | $Enums.NoteType
+    favorite?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     userId?: StringFieldUpdateOperationsInput | string
@@ -3728,6 +3761,11 @@ export namespace Prisma {
     not?: NestedEnumNoteTypeFilter<$PrismaModel> | $Enums.NoteType
   }
 
+  export type BoolFilter<$PrismaModel = never> = {
+    equals?: boolean | BooleanFieldRefInput<$PrismaModel>
+    not?: NestedBoolFilter<$PrismaModel> | boolean
+  }
+
   export type UserScalarRelationFilter = {
     is?: UserWhereInput
     isNot?: UserWhereInput
@@ -3738,6 +3776,7 @@ export namespace Prisma {
     title?: SortOrder
     content?: SortOrder
     type?: SortOrder
+    favorite?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
     userId?: SortOrder
@@ -3749,6 +3788,7 @@ export namespace Prisma {
     title?: SortOrder
     content?: SortOrder
     type?: SortOrder
+    favorite?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
     userId?: SortOrder
@@ -3760,6 +3800,7 @@ export namespace Prisma {
     title?: SortOrder
     content?: SortOrder
     type?: SortOrder
+    favorite?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
     userId?: SortOrder
@@ -3774,6 +3815,14 @@ export namespace Prisma {
     _count?: NestedIntFilter<$PrismaModel>
     _min?: NestedEnumNoteTypeFilter<$PrismaModel>
     _max?: NestedEnumNoteTypeFilter<$PrismaModel>
+  }
+
+  export type BoolWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: boolean | BooleanFieldRefInput<$PrismaModel>
+    not?: NestedBoolWithAggregatesFilter<$PrismaModel> | boolean
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedBoolFilter<$PrismaModel>
+    _max?: NestedBoolFilter<$PrismaModel>
   }
 
   export type NoteCreateNestedManyWithoutUserInput = {
@@ -3838,6 +3887,10 @@ export namespace Prisma {
 
   export type EnumNoteTypeFieldUpdateOperationsInput = {
     set?: $Enums.NoteType
+  }
+
+  export type BoolFieldUpdateOperationsInput = {
+    set?: boolean
   }
 
   export type UserUpdateOneRequiredWithoutNotesNestedInput = {
@@ -3964,6 +4017,11 @@ export namespace Prisma {
     not?: NestedEnumNoteTypeFilter<$PrismaModel> | $Enums.NoteType
   }
 
+  export type NestedBoolFilter<$PrismaModel = never> = {
+    equals?: boolean | BooleanFieldRefInput<$PrismaModel>
+    not?: NestedBoolFilter<$PrismaModel> | boolean
+  }
+
   export type NestedEnumNoteTypeWithAggregatesFilter<$PrismaModel = never> = {
     equals?: $Enums.NoteType | EnumNoteTypeFieldRefInput<$PrismaModel>
     in?: $Enums.NoteType[] | ListEnumNoteTypeFieldRefInput<$PrismaModel>
@@ -3974,11 +4032,20 @@ export namespace Prisma {
     _max?: NestedEnumNoteTypeFilter<$PrismaModel>
   }
 
+  export type NestedBoolWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: boolean | BooleanFieldRefInput<$PrismaModel>
+    not?: NestedBoolWithAggregatesFilter<$PrismaModel> | boolean
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedBoolFilter<$PrismaModel>
+    _max?: NestedBoolFilter<$PrismaModel>
+  }
+
   export type NoteCreateWithoutUserInput = {
     id?: string
     title?: string | null
     content?: string | null
     type?: $Enums.NoteType
+    favorite?: boolean
     createdAt?: Date | string
     updatedAt?: Date | string
     aiSummary?: string | null
@@ -3989,6 +4056,7 @@ export namespace Prisma {
     title?: string | null
     content?: string | null
     type?: $Enums.NoteType
+    favorite?: boolean
     createdAt?: Date | string
     updatedAt?: Date | string
     aiSummary?: string | null
@@ -4028,6 +4096,7 @@ export namespace Prisma {
     title?: StringNullableFilter<"Note"> | string | null
     content?: StringNullableFilter<"Note"> | string | null
     type?: EnumNoteTypeFilter<"Note"> | $Enums.NoteType
+    favorite?: BoolFilter<"Note"> | boolean
     createdAt?: DateTimeFilter<"Note"> | Date | string
     updatedAt?: DateTimeFilter<"Note"> | Date | string
     userId?: StringFilter<"Note"> | string
@@ -4091,6 +4160,7 @@ export namespace Prisma {
     title?: string | null
     content?: string | null
     type?: $Enums.NoteType
+    favorite?: boolean
     createdAt?: Date | string
     updatedAt?: Date | string
     aiSummary?: string | null
@@ -4101,6 +4171,7 @@ export namespace Prisma {
     title?: NullableStringFieldUpdateOperationsInput | string | null
     content?: NullableStringFieldUpdateOperationsInput | string | null
     type?: EnumNoteTypeFieldUpdateOperationsInput | $Enums.NoteType
+    favorite?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     aiSummary?: NullableStringFieldUpdateOperationsInput | string | null
@@ -4111,6 +4182,7 @@ export namespace Prisma {
     title?: NullableStringFieldUpdateOperationsInput | string | null
     content?: NullableStringFieldUpdateOperationsInput | string | null
     type?: EnumNoteTypeFieldUpdateOperationsInput | $Enums.NoteType
+    favorite?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     aiSummary?: NullableStringFieldUpdateOperationsInput | string | null
@@ -4121,6 +4193,7 @@ export namespace Prisma {
     title?: NullableStringFieldUpdateOperationsInput | string | null
     content?: NullableStringFieldUpdateOperationsInput | string | null
     type?: EnumNoteTypeFieldUpdateOperationsInput | $Enums.NoteType
+    favorite?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     aiSummary?: NullableStringFieldUpdateOperationsInput | string | null

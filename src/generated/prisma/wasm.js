@@ -131,6 +131,7 @@ exports.Prisma.NoteScalarFieldEnum = {
   title: 'title',
   content: 'content',
   type: 'type',
+  favorite: 'favorite',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt',
   userId: 'userId',

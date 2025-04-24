@@ -2,11 +2,12 @@ export interface Note {
   id: string;
   title: string;
   content: string;
-  is_favorite: boolean;
-  created_at: string;
-  updated_at: string;
-  user_id: string;
-  summary?: string;
+  favorite: boolean;
+  type?: "NOTE" | "JOURNAL";
+  createdAt?: string;
+  updatedAt?: string;
+  userId: string;
+  aiSummary?: string;
 }
 
 // Function to summarize text using DeepSeek API

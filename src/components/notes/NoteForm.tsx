@@ -13,8 +13,9 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
-import { Note } from "./NoteCard";
 import { Loader2 } from "lucide-react";
+import { useRouter } from "next/navigation";
+import { Note } from "@/lib/api";
 
 const formSchema = z.object({
   title: z.string().min(1, { message: "Title is required" }),
@@ -23,12 +24,13 @@ const formSchema = z.object({
 
 interface NoteFormProps {
   initialData?: Note;
-  onSubmit: (data: z.infer<typeof formSchema>) => Promise<Note>;
+  onSubmit: any;
   isLoading: boolean;
 }
 
 export function NoteForm({ initialData, onSubmit, isLoading }: NoteFormProps) {
   const [isSummarizing, setIsSummarizing] = useState(false);
+  const router = useRouter();
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -51,7 +53,7 @@ export function NoteForm({ initialData, onSubmit, isLoading }: NoteFormProps) {
     setIsSummarizing(true);
     try {
       const result = await onSubmit(values);
-      //   navigate(`/view-note/${result.id}`);
+      router.push("/");
     } finally {
       setIsSummarizing(false);
     }
