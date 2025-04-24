@@ -132,47 +132,33 @@ export function useNotes() {
       id: string;
       isFavorite: boolean;
     }) => {
-      // In a real app, this would be:
-      // const { data, error } = await supabase
-      //   .from('notes')
-      //   .update({ favourite: isFavorite })
-      //   .eq('id', id)
-      //   .select()
-      //   .single();
+      const res = await axios.put(
+        `${process.env.NEXT_PUBLIC_API_URL}/api/note/${id}/favorite`,
+        {
+          favorite: isFavorite,
+        }
+      );
 
-      // if (error) throw error;
-      // return data;
+      if (res.status !== 200) {
+        throw new Error("Failed to update favorite status");
+      }
 
-      // Mock implementation
-      const existingNote = mockNotes.find((n) => n.id === id);
-      if (!existingNote) throw new Error("Note not found");
-
-      return {
-        ...existingNote,
-        favourite: isFavorite,
-        updatedAt: new Date().toISOString(),
-      };
+      return res.data;
     },
     onSuccess: (data) => {
       queryClient.invalidateQueries({ queryKey: ["notes"] });
       queryClient.invalidateQueries({ queryKey: ["notes", data.id] });
-      //   toast({
-      //     title: data.favourite
-      //       ? "Added to favorites"
-      //       : "Removed from favorites",
-      //     description: data.favourite
-      //       ? "Note has been added to favorites"
-      //       : "Note has been removed from favorites",
-      //   });
+      toast.success(
+        data.note.favorite
+          ? "Note added to favorites"
+          : "Note removed from favorites"
+      );
       return data;
     },
     onError: (error) => {
-      //   toast({
-      //     title: "Failed to update favorites",
-      //     description:
-      //       error instanceof Error ? error.message : "An unknown error occurred",
-      //     variant: "destructive",
-      //   });
+      toast.error("Failed to update favorite status", {
+        description: "An unknown error occurred",
+      });
     },
   });
 

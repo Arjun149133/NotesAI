@@ -78,11 +78,11 @@ export default function ViewNote() {
   };
 
   const handleToggleFavorite = async () => {
-    // if (!note) return;
-    // await toggleFavorite.mutateAsync({
-    //   id: note.id,
-    //   isFavorite: !note.favorite,
-    // });
+    if (!note) return;
+    await toggleFavorite.mutateAsync({
+      id: note.id,
+      isFavorite: !note.favorite,
+    });
   };
 
   if (isLoading) {

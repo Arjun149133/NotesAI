@@ -22,7 +22,6 @@ import Link from "next/link";
 import { createClient } from "@/utils/supabase/client";
 import axios from "axios";
 import { Note } from "@/lib/api";
-import { useQuery } from "@tanstack/react-query";
 
 export default function Page() {
   const { data, isFetching, isLoading, deleteNote, toggleFavorite } =
