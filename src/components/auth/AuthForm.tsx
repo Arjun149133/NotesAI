@@ -1,7 +1,7 @@
 "use client";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
-import { z } from "zod";
+import { set, z } from "zod";
 import {
   Form,
   FormControl,
@@ -16,6 +16,8 @@ import { createClient } from "@/utils/supabase/client";
 import { toast } from "sonner";
 import { useRouter } from "next/navigation";
 import axios from "axios";
+import { useState } from "react";
+import SpinnerLoader from "../SpinnerLoader";
 
 const formSchema = z.object({
   email: z.string().email("Invalid email address"),
@@ -30,11 +32,13 @@ export function AuthForm({ text }: { text?: string }) {
       password: "",
     },
   });
+  const [isLoading, setIsLoading] = useState(false);
   const router = useRouter();
 
   const onSubmit = async (data: z.infer<typeof formSchema>) => {
     // Handle form submission
     try {
+      setIsLoading(true);
       const supabase = await createClient();
 
       const formData = {
@@ -54,11 +58,13 @@ export function AuthForm({ text }: { text?: string }) {
 
         if (res.status === 200 && res.data.message === "User already exists") {
           toast.error("User already exists. Please sign in.");
+          setIsLoading(false);
           return;
         }
 
         if (res.status !== 200) {
           toast.error("User creation failed. Please try again.");
+          setIsLoading(false);
           return;
         }
 
@@ -69,6 +75,7 @@ export function AuthForm({ text }: { text?: string }) {
           toast.error(
             "Error signing up. Please check your email and password."
           );
+          setIsLoading(false);
           return;
         }
 
@@ -85,16 +92,19 @@ export function AuthForm({ text }: { text?: string }) {
 
         if (res.status === 200 && res.data.message === "User does not exist") {
           toast.error("User does not exist. Please sign up.");
+          setIsLoading(false);
           return;
         }
 
         if (res.status === 200 && res.data.message === "Invalid password") {
           toast.error("Invalid password. Please try again.");
+          setIsLoading(false);
           return;
         }
 
         if (res.status !== 200) {
           toast.error("User authentication failed. Please try again.");
+          setIsLoading(false);
           return;
         }
 
@@ -105,13 +115,16 @@ export function AuthForm({ text }: { text?: string }) {
           toast.error(
             "Error signing in. Please check your email and password."
           );
+          setIsLoading(false);
           return;
         }
 
         router.push("/");
+        setIsLoading(false);
         toast.success("Sign in successful!");
       }
     } catch (error) {
+      setIsLoading(false);
       console.error("Error during form submission:", error);
       toast.error("An error occurred. Please try again.");
     }
@@ -172,8 +185,20 @@ export function AuthForm({ text }: { text?: string }) {
           }}
         />
         <div className=" flex items-center justify-center">
-          <Button type="submit" className=" cursor-pointer min-w-28">
-            {text}
+          <Button
+            type="submit"
+            disabled={isLoading}
+            className=" cursor-pointer min-w-28"
+          >
+            {isLoading ? (
+              <>
+                <div className=" flex items-center justify-center">
+                  <SpinnerLoader />
+                </div>
+              </>
+            ) : (
+              <>{text}</>
+            )}
           </Button>
         </div>
       </form>
