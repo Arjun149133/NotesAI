@@ -44,11 +44,11 @@ export function Sidebar() {
       href: "/",
       icon: FileText,
     },
-    {
-      title: "Favorites",
-      href: "/favorites",
-      icon: Star,
-    },
+    // {
+    //   title: "Favorites",
+    //   href: "/favorites",
+    //   icon: Star,
+    // },
     {
       title: "Settings",
       href: "/settings",

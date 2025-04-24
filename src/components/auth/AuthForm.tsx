@@ -72,6 +72,7 @@ export function AuthForm({ text }: { text?: string }) {
           return;
         }
 
+        router.push("/");
         toast.success("Sign up successful! ");
       } else {
         const res = await axios.post(
@@ -133,6 +134,7 @@ export function AuthForm({ text }: { text?: string }) {
                     </span>
                     <Input
                       id="email"
+                      type="email"
                       placeholder="Enter your email"
                       className="pl-10 pr-3 py-2 rounded-lg w-full bg-[#23273C] text-white border border-gray-700 focus:border-[#884dff] outline-none transition-all"
                       {...field}
@@ -157,6 +159,7 @@ export function AuthForm({ text }: { text?: string }) {
                     </span>
                     <Input
                       id="password"
+                      type="password"
                       placeholder="Enter your password"
                       className="pl-10 pr-3 py-2 rounded-lg w-full bg-[#23273C] text-white border border-gray-700 focus:border-[#884dff] outline-none transition-all"
                       {...field}
