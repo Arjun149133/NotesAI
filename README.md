@@ -1,36 +1,97 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Project Setup Guide
+
+This repository contains a web application built with [Bun](https://bun.sh/) and [Supabase](https://supabase.com/), using [Prisma](https://www.prisma.io/) as an ORM.
 
 ## Getting Started
 
-First, run the development server:
+Follow these steps to set up and run the project locally:
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+### Prerequisites
+
+- [Bun](https://bun.sh/) - JavaScript runtime and package manager
+- [Supabase](https://supabase.com/) account with a project created
+- Git
+
+### Installation and Setup
+
+1. **Clone the repository**
+
+   ```bash
+   git clone <repository-url>
+   cd <repository-name>
+   ```
+
+2. **Install dependencies**
+
+   ```bash
+   bun install
+   ```
+
+3. **Configure Supabase**
+
+   - Create a new project in your Supabase dashboard
+   - Note down your project URL and API keys
+
+4. **Set up environment variables**
+
+   ```bash
+   cp .env.example .env
+   ```
+
+   Open the `.env` file and update it with your Supabase credentials and other required environment variables.
+
+5. **Generate Prisma Client**
+
+   ```bash
+   bunx prisma generate
+   ```
+
+6. **Start the development server**
+
+   ```bash
+   bun run dev
+   ```
+
+7. **Access the application**
+   Open your browser and navigate to [http://localhost:3000](http://localhost:3000)
+
+## Project Structure
+
+```
+├── prisma/          # Prisma schema and migrations
+├── public/          # Static assets
+├── src/             # Application source code
+├── .env             # Environment variables (create from .env.example)
+├── .env.example     # Example environment variables
+└── README.md        # This file
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## Available Scripts
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+- `bun run dev` - Start the development server
+- `bun run build` - Build the application for production
+- `bun run start` - Run the built application
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+## Database Management
 
-## Learn More
+This project uses Prisma ORM to interact with the Supabase PostgreSQL database:
 
-To learn more about Next.js, take a look at the following resources:
+- `bunx prisma studio` - Open Prisma Studio to manage your database
+- `bunx prisma migrate dev` - Create migrations from your Prisma schema changes
+- `bunx prisma db push` - Push schema changes directly to the database
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## Contributing
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+1. Fork the repository
+2. Create a feature branch (`git checkout -b feature/amazing-feature`)
+3. Commit your changes (`git commit -m 'Add some amazing feature'`)
+4. Push to the branch (`git push origin feature/amazing-feature`)
+5. Open a Pull Request
 
-## Deploy on Vercel
+## License
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+[MIT](LICENSE) or whichever license you prefer.
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+## Support
+
+For any questions or issues, please open an issue in the repository or contact the repository maintainer.
