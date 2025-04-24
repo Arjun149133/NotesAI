@@ -72,9 +72,7 @@ export function AuthForm({ text }: { text?: string }) {
           return;
         }
 
-        toast.success(
-          "Sign up successful! Please check your email for confirmation."
-        );
+        toast.success("Sign up successful! ");
       } else {
         const res = await axios.post(
           `${process.env.NEXT_PUBLIC_API_URL}/api/login-user`,
